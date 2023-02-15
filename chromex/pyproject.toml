@@ -3,7 +3,7 @@ requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-package-dir = {"" = "chromex"}
+package-dir = {"chromex" = ""}
 
 [tool.setuptools.dynamic]
 readme = {file = ["README.md"], content-type = "text/markdown"}
@@ -32,6 +32,7 @@ dependencies = [
     "selenium",
     "cchardet",
     "beautifulsoup4",
+    "pydantic[dotenv]",
 ]
 
 [project.optional-dependencies]
