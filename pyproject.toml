@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "chromex"}
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md"], content-type = "text/markdown"}
+
+[project]
+name = "chromex"
+version = "0.1.0"
+requires-python = ">=3.9"
+description = "An asynchronous library for chrome automations."
+authors = [
+    {name = "Daniel Henderson", email = "me@danhenderson.dev"},
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: Unix",
+    "Operating System :: POSIX",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11"
+]
+dependencies = [
+    "asyncio",
+    "selenium",
+    "cchardet",
+    "beautifulsoup4",
+]
+
+[project.optional-dependencies]
+cli = [
+    "rich",
+    "click"
+]
+test = [
+    "coverage[toml]",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov"
+]
+
+[tool.coverage.paths]
+source = ["chromex"]
+
+
+[tool.coverage.run]
+branch = ["true"]
+source =[
+    "chromex",
+    "tests",
+]
+parallel = ["false"]
+
+
+[tool.coverage.report]
+show_missing = ["true"]
+precision = 2
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra --strict-markers --ignore=.eggs --doctest-modules --tb=long"
+norecursedirs = [
+    ".git",
+    "dist",
+    "build",
+]
+testpaths = [
+    "chromex/test"
+]
