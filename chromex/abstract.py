@@ -1,8 +1,8 @@
 from abc import ABC
-from asyncio import get_event_loop, ensure_future, Future, gather
-from pydantic import BaseModel
+from asyncio import get_event_loop, ensure_future, Future, gather, sleep
+from pydantic import BaseModel as _BaseModel
 
-class AsyncBaseModel(BaseModel, ABC):
+class BaseModel(_BaseModel, ABC):
     _tasks: list[Future] = []
     
     
@@ -18,6 +18,14 @@ class AsyncBaseModel(BaseModel, ABC):
         cls._tasks.append(task)
         return await task
 
+    async def wait(self, seconds: int) -> None:
+        await self.run_async(sleep, seconds)
+
+    
+    async def close(self) -> None:
+        if self._tasks:
+            await gather(*self._tasks)
+        
 
     async def __aenter__(self):
         # Ref: https://peps.python.org/pep-0492/#asynchronous-context-managers-and-async-with
@@ -26,8 +34,7 @@ class AsyncBaseModel(BaseModel, ABC):
     
     async def __aexit__(self, exc_type, exc_value, traceback) -> None:
         # Ref: https://peps.python.org/pep-0492/#asynchronous-context-managers-and-async-with 
-        if self._tasks:
-            await gather(*self._tasks)
+        await self.close()
       
 
     async def __await__(self, *args):

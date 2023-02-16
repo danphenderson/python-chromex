@@ -1,9 +1,9 @@
 from pydantic import Field, AnyHttpUrl, root_validator, UUID5
 from uuid import uuid5, NAMESPACE_URL
 from asyncio import Future
-from chromex.abstract import AsyncBaseModel
+from chromex.abstract import BaseModel
 
-class HRef(AsyncBaseModel):
+class HRef(BaseModel):
     url: AnyHttpUrl
     id: UUID5 | None = Field(default=None) # sha1 hash of url for unique id
     

@@ -32,7 +32,8 @@ dependencies = [
     "selenium",
     "cchardet",
     "beautifulsoup4",
-    "pydantic[dotenv]",
+    "pydantic",
+    "python-Levenshtein",
 ]
 
 [project.optional-dependencies]
