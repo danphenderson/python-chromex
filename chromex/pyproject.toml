@@ -37,10 +37,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-cli = [
-    "rich",
-    "click"
-]
 test = [
     "coverage[toml]",
     "pytest",
@@ -75,5 +71,5 @@ norecursedirs = [
     "build",
 ]
 testpaths = [
-    "chromex/test"
+    "chromex/tests"
 ]
