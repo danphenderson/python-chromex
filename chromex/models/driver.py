@@ -1,3 +1,4 @@
+from pydantic import Field
 from selenium.webdriver import Chrome
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.keys import Keys
@@ -14,7 +15,11 @@ from chromex.models.node import HPage, hpage
 BaseModel.Config.arbitrary_types_allowed = True
 
 class ChromeX(BaseModel):
-    _browser : Chrome
+    _browser: Chrome
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.__class__._browser = Chrome(executable_path=conf.driver_path, options=conf.options)
 
     @property
     def page_source(self) -> str:
@@ -64,6 +69,6 @@ class ChromeX(BaseModel):
         await self.google()
         await self.send_element_keys("q", query, key=Keys.RETURN)
 
-async def driver() -> ChromeX:
-    async with ChromeX(_browser=Chrome(conf.driver_path, options=conf.options)) as chromex:
-        return chromex
+async def driver():
+    async with ChromeX() as chromex:
+        return await chromex # type: ignore

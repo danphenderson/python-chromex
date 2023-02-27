@@ -1,10 +1,11 @@
-from abc import ABC
+from abc import ABCMeta
 from asyncio import get_event_loop, ensure_future, Future, sleep, gather
+from inspect import iscoroutine
 from pydantic import BaseModel as _BaseModel
 from pydantic import Field
 
-class BaseModel(ABC, _BaseModel):
-    _tasks: list[Future] = Field(default_factory=list)
+class BaseModel(_BaseModel, metaclass=ABCMeta):
+    _tasks: list = []
 
     @staticmethod
     async def _run_sync(func, *args, **kwargs):
@@ -17,6 +18,7 @@ class BaseModel(ABC, _BaseModel):
         self._tasks.append(task)
         return await task
     
+
     async def wait(self, seconds: int) -> None:
         if seconds > 0:
             await sleep(seconds)
@@ -26,13 +28,18 @@ class BaseModel(ABC, _BaseModel):
         # Ref: https://peps.python.org/pep-0492/#asynchronous-context-managers-and-async-with
         return self
 
-    
+
     async def __aexit__(self, exc_type, exc_value, traceback) -> None:
         # Ref: https://peps.python.org/pep-0492/#asynchronous-context-managers-and-async-with 
+        coroutines = []
         if self._tasks:
-            await gather(*self._tasks)
-        return None 
-      
-
+            for task in self._tasks:
+                if iscoroutine(task):
+                    coroutines.append(task)
+                else:
+                    # handle non-coroutine objects here, if necessary
+                    pass
+            await gather(*coroutines)
+          
     async def __await__(self):
         return self._run_sync(lambda: self).__await__()
