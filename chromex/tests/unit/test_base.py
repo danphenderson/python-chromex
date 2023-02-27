@@ -2,13 +2,12 @@ import pytest
 from asyncio import Future
 from asyncio.coroutines import iscoroutinefunction
 import tracemalloc
-
+from base.abstract import BaseModel as _BaseModel
 tracemalloc.start()
 
 @pytest.fixture(scope="module")
 def BaseModel():
-    from chromex.base.abstract import BaseModel
-    return BaseModel
+    return _BaseModel
 
 @pytest.fixture(scope="module")
 def BaseModelClass(BaseModel):

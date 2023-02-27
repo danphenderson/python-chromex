@@ -7,6 +7,7 @@ from asyncio import Future
 
 
 from chromex.base.abstract import BaseModel
+from chromex.base.conf import conf
 from chromex.models.edge import HRef, href
 from chromex.models.node import HPage, hpage
 
@@ -62,3 +63,7 @@ class ChromeX(BaseModel):
     async def google_search(self, query: str) -> None:
         await self.google()
         await self.send_element_keys("q", query, key=Keys.RETURN)
+
+async def driver() -> ChromeX:
+    async with ChromeX(_browser=Chrome(conf.driver_path, options=conf.options)) as chromex:
+        return chromex

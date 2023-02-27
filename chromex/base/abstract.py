@@ -1,10 +1,11 @@
 from abc import ABC
-from asyncio import get_event_loop, ensure_future, Future, sleep
+from asyncio import get_event_loop, ensure_future, Future, sleep, gather
 from pydantic import BaseModel as _BaseModel
 from pydantic import Field
 
 class BaseModel(ABC, _BaseModel):
-    
+    _tasks: list[Future] = Field(default_factory=list)
+
     @staticmethod
     async def _run_sync(func, *args, **kwargs):
         loop = get_event_loop()
@@ -12,8 +13,9 @@ class BaseModel(ABC, _BaseModel):
     
     
     async def run_async(self, func, *args, **kwargs) -> Future:
-        return await ensure_future(self._run_sync(func, *args, **kwargs))
-
+        task = ensure_future(self._run_sync(func, *args, **kwargs))
+        self._tasks.append(task)
+        return await task
     
     async def wait(self, seconds: int) -> None:
         if seconds > 0:
@@ -27,7 +29,9 @@ class BaseModel(ABC, _BaseModel):
     
     async def __aexit__(self, exc_type, exc_value, traceback) -> None:
         # Ref: https://peps.python.org/pep-0492/#asynchronous-context-managers-and-async-with 
-        pass 
+        if self._tasks:
+            await gather(*self._tasks)
+        return None 
       
 
     async def __await__(self):
