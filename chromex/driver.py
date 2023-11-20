@@ -9,21 +9,6 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from chromex.base.logging import console_log as log
 
-
-from chromex.base.conf import conf
-
-class Driver:
-import asyncio
-from typing import Awaitable, Any
-from selenium.webdriver import Chrome
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.common.keys import Keys
-from bs4 import BeautifulSoup
-
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
-from chromex.base.logging import console_log as log
-
 from chromex.base.conf import conf
 
 class Driver:
@@ -126,10 +111,10 @@ class Driver:
             raise ValueError(f"Unable to parse page source")
         return soup.get_text()
 
-
     async def google_search(self, query: str) -> None:
         await self.google()
         await self.send_element_keys("q", query, key=Keys.RETURN)
+
 
 async def get_driver() -> Awaitable[Driver]:
     return await Driver() # type: ignore
