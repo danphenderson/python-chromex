@@ -12,7 +12,7 @@ readme = {file = ["README.md"], content-type = "text/markdown"}
 name = "chromex"
 version = "0.1.0"
 requires-python = ">=3.9"
-description = "An asynchronous library for chrome automations."
+description = "An asynchronous library for chrome automation and extraction."
 authors = [
     {name = "Daniel Henderson", email = "me@danhenderson.dev"},
 ]
@@ -32,8 +32,7 @@ dependencies = [
     "selenium",
     "cchardet",
     "beautifulsoup4",
-    "pydantic",
-    "python-Levenshtein",
+    "webdriver-manager",
 ]
 
 [project.optional-dependencies]
