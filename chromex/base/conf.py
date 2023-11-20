@@ -1,10 +1,8 @@
 
-
-from pydantic_settings import BaseSettings
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 
-class Conf(BaseSettings):
+class Conf:
     """
     Configuration for a Google Chrome web driver.
     
