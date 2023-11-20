@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
-from chromex.base.logging import console_log as log
+from chromex.base.logging import logger
 
 from chromex.base.conf import conf
 
@@ -35,7 +35,7 @@ class Driver:
         return self._run_sync(lambda: self).__await__()
 
     async def __aexit__(self, exc_type, exc_value, traceback):
-        log.info(f"Closing Chrome Driver with {len(self._tasks)} tasks remaining")
+        logger.info(f"Closing Chrome Driver with {len(self._tasks)} tasks remaining")
         await self.close()
  
     @property
@@ -51,31 +51,32 @@ class Driver:
         return self._browser.title       
 
     async def run_async(self, func) -> Awaitable[Any]:
-        log.debug(f"Running async function {func.__name__}")
+        logger.debug(f"Running async function {func.__name__}")
         task = asyncio.create_task(self._run_sync(func))
         self._tasks.append(task)
-        log.debug(f"Task {task} added to {len(self._tasks)} tasks")
+        logger.debug(f"Task {task} added to {len(self._tasks)} tasks")
         return await task
 
     async def get(self, url: str, wait: int = 0) -> None:
-        log.info(f"Getting {url}")
+        logger.info(f"Getting {url}")
         await self.run_async(lambda: self._browser.get(url))
         if wait > 0:
             await self.wait(wait)
 
     async def page_soup(self) -> Awaitable[BeautifulSoup]:
-        log.info("Getting page soup")
+        logger.info("Getting page soup")
         return await self.run_async(
             lambda: BeautifulSoup(self._browser.page_source.strip(), "html.parser")
         )
 
     async def element(self, value: str, by: str = "id") -> Awaitable[WebElement]:
-        log.info(f"Getting element {value} by {by}")
+        logger.info(f"Getting element {value} by {by}")
         return await self.run_async(
             lambda: self._browser.find_element(by=by, value=value)
         )
 
     async def elements(self, value: str, by: str = "id") -> Awaitable[list[WebElement]]:
+        logger.info(f"Getting elements {value} by {by}")
         return await self.run_async(
             lambda: self._browser.find_elements(by=by, value=value)
         )
@@ -83,21 +84,21 @@ class Driver:
     async def send_element_keys(
         self, value: str, keys: str, by: str = "id", key=Keys.ENTER
     ) -> None:
-        log.info(f"Sending keys {keys} to element {value} by {by}")
+        logger.info(f"Sending keys {keys} to element {value} by {by}")
         element = await self.element(value, by)
         if not isinstance(element, WebElement):
-            log.error(f"Element {value} not found, search by {by}")
+            logger.error(f"Element {value} not found, search by {by}")
             raise ValueError(f"Element {value} not found, search by {by}")
         await self.run_async(lambda: element.send_keys(keys, key))
 
     async def wait(self, seconds) -> None:
-        log.info(
+        logger.info(
             f"Waiting {seconds} seconds; there are {len(self._tasks)} tasks queued"
         )
         await asyncio.sleep(seconds)
 
     async def close(self) -> None:
-        log.critical(
+        logger.critical(
             f"Closing Chrome Driver with {len(self._tasks)} tasks remaining"
         )
         await self.run_async(self._browser.close)
