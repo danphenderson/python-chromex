@@ -1,5 +1,6 @@
 
-from pydantic import BaseSettings
+
+from pydantic_settings import BaseSettings
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 
 

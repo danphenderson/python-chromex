@@ -7,12 +7,12 @@ def test_endpoint():
 @pytest.mark.asyncio
 async def test_async_driver(test_endpoint):
         from chromex.chromex import driver
-        from chromex.models.driver import ChromeX, Chrome
+        from chromex.driver import Driver, Chrome
 
         # Test driver method
         chrome = await driver()
         assert isinstance(chrome._browser, Chrome)
-        assert isinstance(chrome, ChromeX)
+        assert isinstance(chrome, Driver)
         
         # Test get method
         await chrome.get(test_endpoint)
