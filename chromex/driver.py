@@ -15,9 +15,10 @@ class Driver:
     """
     Asynchronous driver class for automating web browser actions using Selenium and Chrome.
 
-    Attributes:
-        _browser (Chrome): An instance of Selenium's Chrome WebDriver.
-        _tasks (list): A list to track asynchronous tasks.
+    :ivar _browser: An instance of Selenium's Chrome WebDriver.
+    :vartype _browser: Chrome
+    :ivar _tasks: A list to track asynchronous tasks.
+    :vartype _tasks: list
     """
 
     def __init__(self, **data):
@@ -38,11 +39,10 @@ class Driver:
         """
         Executes a synchronous function asynchronously using asyncio.
 
-        Args:
-            func (function): The synchronous function to run.
-
-        Returns:
-            Awaitable[Any]: The result of the asynchronous execution of the function.
+        :param func: The synchronous function to run.
+        :type func: function
+        :return: The result of the asynchronous execution of the function.
+        :rtype: Awaitable[Any]
         """
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, func)
@@ -54,11 +54,10 @@ class Driver:
 
         This method is used internally to run synchronous Selenium commands in an asynchronous manner.
 
-        Args:
-            func (function): The synchronous function to be run asynchronously.
-
-        Returns:
-            Awaitable[Any]: The result of the asynchronous execution.
+        :param func: The synchronous function to be run asynchronously.
+        :type func: function
+        :return: The result of the asynchronous execution.
+        :rtype: Awaitable[Any]
         """
         logger.debug(f"Running async function {func.__name__}")
         task = asyncio.create_task(self._run_sync(func))
@@ -94,9 +93,10 @@ class Driver:
 
         Optionally waits for a specified number of seconds after loading the page.
 
-        Args:
-            url (str): The URL to navigate to.
-            wait (int, optional): The number of seconds to wait after navigating to the URL. Defaults to 0.
+        :param url: The URL to navigate to.
+        :type url: str
+        :param wait: The number of seconds to wait after navigating to the URL. Defaults to 0.
+        :type wait: (int, optional)
         """
         logger.info(f"Getting {url}")
         await self.run_async(lambda: self._browser.get(url))
@@ -107,8 +107,8 @@ class Driver:
         """
         Asynchronously gets the BeautifulSoup object of the current page.
 
-        Returns:
-            Awaitable[BeautifulSoup]: The BeautifulSoup object of the current page source.
+        :return: The BeautifulSoup object of the current page source.
+        :rtype: Awaitable[BeautifulSoup]
         """
         logger.info("Getting page soup")
         return await self.run_async(
@@ -119,12 +119,14 @@ class Driver:
         """
         Asynchronously finds a web element on the current page.
 
-        Args:
-            value (str): The value of the element to find.
-            by (str, optional): The type of search to perform (e.g., by 'id' or 'name'). Defaults to 'id'.
+        This method searches for a single web element based on the provided value and search criteria (e.g., by 'id' or 'name') and returns the first matching element.
 
-        Returns:
-            Awaitable[WebElement]: The web element found on the page.
+        :param value: The value of the element to find.
+        :type value: str
+        :param by: The type of search to perform (e.g., by 'id' or 'name'). Defaults to 'id'.
+        :type by: str
+        :return: The first web element found on the page.
+        :rtype: Awaitable[WebElement]
         """
         logger.info(f"Getting element {value} by {by}")
         return await self.run_async(
@@ -136,12 +138,14 @@ class Driver:
         """
         Asynchronously finds multiple web elements on the current page.
 
-        Args:
-            value (str): The value of the elements to find.
-            by (str, optional): The type of search to perform (e.g., by 'id' or 'name'). Defaults to 'id'.
+        This method searches for web elements based on the provided value and search criteria (e.g., by 'id' or 'name'). It returns a list of all matching elements.
 
-        Returns:
-            Awaitable[list[WebElement]]: A list of web elements found on the page.
+        :param value: The value of the elements to find.
+        :type value: str
+        :param by: The type of search to perform (e.g., by 'id' or 'name'). Defaults to 'id'.
+        :type by: str
+        :return: A list of web elements found on the page.
+        :rtype: Awaitable[list[WebElement]]
         """
         logger.info(f"Getting elements {value} by {by}")
         return await self.run_async(
@@ -154,14 +158,17 @@ class Driver:
         """
         Sends keys to a web element found on the page.
 
-        Args:
-            value (str): The value of the element to send keys to.
-            keys (str): The keys to send to the element.
-            by (str, optional): The type of search to perform (e.g., by 'id'). Defaults to 'id'.
-            key (Keys, optional): The special key to be sent (e.g., Keys.ENTER). Defaults to Keys.ENTER.
+        This method locates a web element based on the given search criteria and sends the specified keys to it. It can also handle special keys like 'Enter'.
 
-        Raises:
-            ValueError: If the specified element is not found.
+        :param value: The value of the element to send keys to.
+        :type value: str
+        :param keys: The keys to send to the element.
+        :type keys: str
+        :param by: The type of search to perform (e.g., by 'id'). Defaults to 'id'.
+        :type by: str
+        :param key: The special key to be sent (e.g., Keys.ENTER). Defaults to Keys.ENTER.
+        :type key: Keys
+        :raises ValueError: If the specified element is not found.
         """
         logger.info(f"Sending keys {keys} to element {value} by {by}")
         element = await self.element(value, by)
@@ -170,15 +177,17 @@ class Driver:
             raise ValueError(f"Element {value} not found, search by {by}")
         await self.run_async(lambda: element.send_keys(keys, key))
 
-    async def wait(self, seconds) -> None:
+    async def wait(self, seconds: int) -> None:
         """
         Asynchronously waits for a specified number of seconds.
 
         This method is used to pause the execution for a given duration.
 
-        Args:
-            seconds (int): The number of seconds to wait.
+        :param seconds: The number of seconds to wait.
+        :type seconds: int
         """
+        if seconds <= 0:
+            return # for convience of calling code
         logger.info(
             f"Waiting {seconds} seconds; there are {len(self._tasks)} tasks queued"
         )
@@ -199,6 +208,8 @@ class Driver:
     async def google(self):
         """
         Navigates to the Google homepage.
+
+        This method is a convenience method for navigating to the Google homepage.
         """
         return await self.get(url="https://www.google.com")
 
@@ -206,8 +217,8 @@ class Driver:
         """
         Retrieves the text content of the current page.
 
-        Returns:
-            str: The text content of the current page.
+        :return The text content of the current page.
+        :rtype str
         """
         soup = await self.run_async(lambda: BeautifulSoup(self._browser.page_source.strip(), "html.parser"))
         if not isinstance(soup, BeautifulSoup):
@@ -218,18 +229,19 @@ class Driver:
         """
         Performs a Google search for the specified query.
 
-        Args:
-            query (str): The search query.
+        This method navigates to the Google homepage, enters the given query into the search bar, and submits the search.
+
+        :param query: The search query.
+        :type query: str
         """
         await self.google()
         await self.send_element_keys("q", query, key=Keys.RETURN)
-
 
 async def get_driver() -> Awaitable[Driver]:
     """
     Asynchronously creates and returns a new Driver instance.
 
-    Returns:
-        Awaitable[Driver]: A new Driver instance.
+    :return: A new Driver instance.
+    :rtype: Awaitable[Driver]
     """
     return await Driver() # type: ignore

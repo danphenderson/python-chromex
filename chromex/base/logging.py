@@ -4,12 +4,21 @@ import logging
 
 def setup_logger(name='chromex', level=logging.INFO, handler=None):
     """
-    Set up a logger for chromex library.
+    Set up a logger for the chromex library.
 
-    Args:
-        name (str): Name of the logger.
-        level (int): Logging level, e.g., logging.INFO.
-        handler (logging.Handler): Logging handler. Defaults to console handler if None.
+    This function initializes and configures a logger with a specified name, logging level, and handler. 
+    If no handler is provided, a default console handler is created and used.
+
+    The logger is set up to output log messages including the timestamp, logger name, log level, and the log message itself.
+
+    :param name: Name of the logger. Default is 'chromex'.
+    :type name: str
+    :param level: Logging level, e.g., logging.INFO. Default is logging.INFO.
+    :type level: int
+    :param handler: Logging handler. If None, defaults to a console handler.
+    :type handler: logging.Handler, optional
+    :return: Configured logger instance.
+    :rtype: logging.Logger
     """
     logger = logging.getLogger(name)
     logger.setLevel(level)
