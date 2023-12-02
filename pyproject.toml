@@ -33,6 +33,7 @@ dependencies = [
     "cchardet",
     "beautifulsoup4",
     "webdriver-manager",
+    "click"
 ]
 
 [project.optional-dependencies]

@@ -5,9 +5,7 @@ name = "pypi"
 
 [packages]
 ipython = "*"
-chromex = {path = "."}
-sphinx = "*"
-twine = "*"
+chromex = {editable = true, extras = ["all"], path = "."}
 
 [dev-packages]
 
@@ -15,6 +13,5 @@ twine = "*"
 
 [scripts]
 build = "python setup.py sdist bdist_wheel"
-release = "twine upload dist/*"
 build-docs = "sphinx-build -b html docs/source docs"
 host-docs = "python -m http.server --directory docs"
