@@ -79,39 +79,23 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
       - name: Install dependencies
         env:
-          PIPENV_DEFAULT_PYTHON_VERSION: ${{ matrix.python-version }}
           PYTHONWARNINGS: ignore:DEPRECATION
           PYTHONIOENCODING: "utf-8"
           GIT_ASK_YESNO: "false"
         run: |
           git submodule sync
           git submodule update --init --recursive
-          python -m pip install -e . --upgrade
-          pipenv install --deploy --dev --python=${{ steps.python-path.outputs.path }}
-      - name: Run pypiserver Windows
-        run: |
-         cmd /c start pipenv run pypi-server run -v --host=0.0.0.0 --port=8080 --hash-algo=sha256 --disable-fallback ./tests/pypi/ ./tests/fixtures
-        if: ${{matrix.os  == 'Windows' }}
-      - name: Run pypiserver Mac
-        run: |
-          pipenv run pypi-server run -v --host=0.0.0.0 --port=8080 --hash-algo=sha256 --disable-fallback ./tests/pypi/ ./tests/fixtures &
-        if: ${{matrix.os  == 'MacOS' }}
-      - name: Run pypiserver Ubuntu
-        run: |
-          pipenv run pypi-server run -v --host=0.0.0.0 --port=8080 --hash-algo=sha256 --disable-fallback ./tests/pypi/ ./tests/fixtures &
-        if: ${{matrix.os  == 'Ubuntu' }}
+          python -m pip install -e '.[all]' --upgrade
       - name: Run tests
         env:
-          PIPENV_DEFAULT_PYTHON_VERSION: ${{ matrix.python-version }}
           PYTHONWARNINGS: ignore:DEPRECATION
-          PIPENV_NOSPIN: "1"
           CI: "1"
           GIT_ASK_YESNO: "false"
           PYPI_VENDOR_DIR: "./tests/pypi/"
           PYTHONIOENCODING: "utf-8"
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=accept-new -o CheckHostIP=no
         run: |
-          pipenv run pytest -ra -n auto -v --fulltrace tests
+          python -m run pytest -ra -n auto -v --fulltrace tests
 
   build:
     name: Build Package
@@ -122,7 +106,6 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: 3.x
-      - run: pip install -U build twine
+      - run: pip install -U build
       - run: |
           python -m build
-          twine check dist/*
