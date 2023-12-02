@@ -37,7 +37,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = [
+tests = [
     "coverage[toml]",
     "pytest",
     "pytest-asyncio",
@@ -98,6 +98,9 @@ norecursedirs = [
 ]
 testpaths = [
     "chromex/tests"
+]
+markers = [
+    "asyncio: mark test as an asyncio coroutine",
 ]
 
 [tool.black]

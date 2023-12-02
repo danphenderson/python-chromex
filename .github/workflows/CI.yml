@@ -83,9 +83,7 @@ jobs:
           PYTHONIOENCODING: "utf-8"
           GIT_ASK_YESNO: "false"
         run: |
-          git submodule sync
-          git submodule update --init --recursive
-          python -m pip install -e '.[all]' --upgrade
+          python -m pip install -e '.["tests", "docs"]' --upgrade
       - name: Run tests
         env:
           PYTHONWARNINGS: ignore:DEPRECATION
@@ -95,7 +93,7 @@ jobs:
           PYTHONIOENCODING: "utf-8"
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=accept-new -o CheckHostIP=no
         run: |
-          python -m run pytest -ra -n auto -v --fulltrace tests
+          python -m run pytest --trace --color=yes
 
   build:
     name: Build Package
