@@ -46,7 +46,7 @@ tests = [
 
 docs = [
     "sphinx",
-    "sphinx-rtd-theme",
+    "sphinx-py3doc-enhanced-theme",
     "sphinx-autodoc-typehints",
     "sphinxcontrib-asyncio",
     "sphinxcontrib-napoleon",
