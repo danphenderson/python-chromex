@@ -77,22 +77,13 @@ jobs:
       - name: Install latest pip, setuptools, wheel
         run: |
           python -m pip install --upgrade pip setuptools wheel
-      - name: Install dependencies
+      - name: Install dependencies & run tests
         env:
           PYTHONWARNINGS: ignore:DEPRECATION
           PYTHONIOENCODING: "utf-8"
           GIT_ASK_YESNO: "false"
         run: |
-          python -m pip install -e '.[tests, docs]' --upgrade
-      - name: Run tests
-        env:
-          PYTHONWARNINGS: ignore:DEPRECATION
-          CI: "1"
-          GIT_ASK_YESNO: "false"
-          PYPI_VENDOR_DIR: "./tests/pypi/"
-          PYTHONIOENCODING: "utf-8"
-          GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=accept-new -o CheckHostIP=no
-        run: |
+          python -m pip install -e '.[tests, docs]' --upgrade  |
           python -m run pytest --trace --color=yes
 
   build:
