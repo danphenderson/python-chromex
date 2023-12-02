@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+ipython = "*"
+chromex = {path = "."}
+sphinx = "*"
+twine = "*"
+
+[dev-packages]
+
+[requires]
+
+[scripts]
+build = "python setup.py sdist bdist_wheel"
+release = "twine upload dist/*"
+build-docs = "sphinx-build -b html docs/source docs"
+host-docs = "python -m http.server --directory docs"
