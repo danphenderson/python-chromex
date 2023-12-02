@@ -84,7 +84,7 @@ jobs:
           GIT_ASK_YESNO: "false"
         run: |
           python -m pip install -e '.[tests, docs]' --upgrade
-          python -m run pytest --trace --color=yes
+          python -m pytest --trace --color=yes
 
   build:
     name: Build Package
