@@ -1,38 +1,57 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-
-
+# -*- coding: utf-8 -*-
 # -- Path setup --------------------------------------------------------------
 # Ensure that the package is in the path
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..')) # TODO: Change to pathlib?
 
+import sphinx_py3doc_enhanced_theme
 
-project = 'chromex'
-copyright = '2023, Daniel P. Henderson'
-author = 'Daniel P. Henderson'
-release = '0.1.0'
+sys.path.insert(0, os.path.abspath('../..'))  # TODO: Change to pathlib?
 
-# -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.coverage',
+    'sphinx.ext.doctest',
+    'sphinx.ext.extlinks',
+    'sphinx.ext.ifconfig',
     'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode',
     'sphinx.ext.todo',
-    # other extensions here
+    'sphinx.ext.viewcode',
 ]
+source_suffix = '.rst'
+master_doc = 'index'
+project = 'chromex'
+year = '2023'
+author = 'Daniel P. Henderson'
+copyright = '{0}, {1}'.format(year, author)
+version = release = '0.1.0'
 
-autodoc_default_options = {
-    'private-members': True,
+pygments_style = 'trac'
+templates_path = ['.']
+extlinks = {
+    'issue': ('https://github.com/danphenderson/python-chromex/issues/%s', '#'),
+    'pr': ('https://github.com/danphenderson/python-chromex/pull/%s', 'PR #'),
 }
+html_theme = 'sphinx_py3doc_enhanced_theme'
+html_theme_path = [sphinx_py3doc_enhanced_theme.get_html_theme_path()]
+html_theme_options = {
+    'githuburl': 'https://github.com/danphenderson/python-chromex/',
+}
+
+html_use_smartypants = True
+html_last_updated_fmt = '%b %d, %Y'
+html_split_index = False
+html_sidebars = {
+    '**': ['searchbox.html', 'globaltoc.html', 'sourcelink.html'],
+}
+html_short_title = '%s-%s' % (project, version)
+
+napoleon_use_ivar = True
+napoleon_use_rtype = False
+napoleon_use_param = False
+
 
 # Intersphinx configuration
 intersphinx_mapping = {
@@ -40,16 +59,3 @@ intersphinx_mapping = {
     'selenium': ('https://selenium-python.readthedocs.io/', None),
     # You can add more mappings for other projects here
 }
-
-
-templates_path = ['_templates']
-exclude_patterns = []
-
-# Since we are using sphinx.ext.todo
-todo_include_todos = True 
-
-# -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
-
-html_theme = 'alabaster'
-html_static_path = ['_static']
