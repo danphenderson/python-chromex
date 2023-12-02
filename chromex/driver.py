@@ -1,15 +1,16 @@
 import asyncio
-from typing import Awaitable, Any
-from selenium.webdriver import Chrome
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.common.keys import Keys
-from bs4 import BeautifulSoup
+from typing import Any, Awaitable
 
+from bs4 import BeautifulSoup
+from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.remote.webelement import WebElement
 from webdriver_manager.chrome import ChromeDriverManager
-from chromex.base.logging import logger
 
 from chromex.base.conf import conf
+from chromex.base.logging import logger
+
 
 class Driver:
     """
@@ -30,10 +31,9 @@ class Driver:
         self._browser = Chrome(
             service=ChromeService(ChromeDriverManager().install()),
             options=conf.options,
-            )
+        )
         self._tasks = []
 
-     
     @staticmethod
     async def _run_sync(func) -> Awaitable[Any]:
         """
@@ -46,8 +46,7 @@ class Driver:
         """
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, func)
-    
-        
+
     async def run_async(self, func) -> Awaitable[Any]:
         """
         Executes a given function asynchronously.
@@ -64,7 +63,7 @@ class Driver:
         self._tasks.append(task)
         logger.debug(f"Task {task} added to {len(self._tasks)} tasks")
         return await task
-    
+
     def __aenter__(self):
         return self
 
@@ -74,7 +73,7 @@ class Driver:
     async def __aexit__(self, exc_type, exc_value, traceback):
         logger.info(f"Closing Chrome Driver with {len(self._tasks)} tasks remaining")
         await self.close()
- 
+
     @property
     def page_source(self) -> str:
         return self._browser.page_source
@@ -111,9 +110,7 @@ class Driver:
         :rtype: Awaitable[BeautifulSoup]
         """
         logger.info("Getting page soup")
-        return await self.run_async(
-            lambda: BeautifulSoup(self._browser.page_source.strip(), "html.parser")
-        )
+        return await self.run_async(lambda: BeautifulSoup(self._browser.page_source.strip(), "html.parser"))
 
     async def element(self, value: str, by: str = "id") -> Awaitable[WebElement]:
         """
@@ -129,10 +126,7 @@ class Driver:
         :rtype: Awaitable[WebElement]
         """
         logger.info(f"Getting element {value} by {by}")
-        return await self.run_async(
-            lambda: self._browser.find_element(by=by, value=value)
-        )
-
+        return await self.run_async(lambda: self._browser.find_element(by=by, value=value))
 
     async def elements(self, value: str, by: str = "id") -> Awaitable[list[WebElement]]:
         """
@@ -148,13 +142,9 @@ class Driver:
         :rtype: Awaitable[list[WebElement]]
         """
         logger.info(f"Getting elements {value} by {by}")
-        return await self.run_async(
-            lambda: self._browser.find_elements(by=by, value=value)
-        )
+        return await self.run_async(lambda: self._browser.find_elements(by=by, value=value))
 
-    async def send_element_keys(
-        self, value: str, keys: str, by: str = "id", key=Keys.ENTER
-    ) -> None:
+    async def send_element_keys(self, value: str, keys: str, by: str = "id", key=Keys.ENTER) -> None:
         """
         Sends keys to a web element found on the page.
 
@@ -187,12 +177,9 @@ class Driver:
         :type seconds: int
         """
         if seconds <= 0:
-            return # for convience of calling code
-        logger.info(
-            f"Waiting {seconds} seconds; there are {len(self._tasks)} tasks queued"
-        )
+            return  # for convience of calling code
+        logger.info(f"Waiting {seconds} seconds; there are {len(self._tasks)} tasks queued")
         await asyncio.sleep(seconds)
-
 
     async def close(self) -> None:
         """
@@ -200,9 +187,7 @@ class Driver:
 
         This method should be called to ensure proper cleanup of resources.
         """
-        logger.critical(
-            f"Closing Chrome Driver with {len(self._tasks)} tasks remaining"
-        )
+        logger.critical(f"Closing Chrome Driver with {len(self._tasks)} tasks remaining")
         await self.run_async(self._browser.close)
 
     async def google(self):
@@ -222,7 +207,7 @@ class Driver:
         """
         soup = await self.run_async(lambda: BeautifulSoup(self._browser.page_source.strip(), "html.parser"))
         if not isinstance(soup, BeautifulSoup):
-            raise ValueError(f"Unable to parse page source")
+            raise ValueError("Unable to parse page source")
         return soup.get_text()
 
     async def google_search(self, query: str) -> None:
@@ -237,6 +222,7 @@ class Driver:
         await self.google()
         await self.send_element_keys("q", query, key=Keys.RETURN)
 
+
 async def get_driver() -> Awaitable[Driver]:
     """
     Asynchronously creates and returns a new Driver instance.
@@ -244,4 +230,4 @@ async def get_driver() -> Awaitable[Driver]:
     :return: A new Driver instance.
     :rtype: Awaitable[Driver]
     """
-    return await Driver() # type: ignore
+    return await Driver()  # type: ignore

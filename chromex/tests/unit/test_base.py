@@ -1,20 +1,24 @@
-import pytest
+import tracemalloc
 from asyncio import Future
 from asyncio.coroutines import iscoroutinefunction
-import tracemalloc
+
+import pytest
 from base.abstract import BaseModel as _BaseModel
+
 tracemalloc.start()
+
 
 @pytest.fixture(scope="module")
 def BaseModel():
     return _BaseModel
 
+
 @pytest.fixture(scope="module")
 def BaseModelClass(BaseModel):
     class BaseModelClass(BaseModel):
         pass
-    return BaseModelClass
 
+    return BaseModelClass
 
 
 @pytest.mark.asyncio
@@ -28,7 +32,6 @@ async def test_base_model(BaseModel, BaseModelClass):
     assert iscoroutinefunction(BaseModelClass.__aenter__)
     assert iscoroutinefunction(BaseModelClass.__aexit__)
     assert iscoroutinefunction(BaseModelClass.__await__)
-
 
 
 @pytest.mark.asyncio
@@ -47,7 +50,7 @@ async def test___aexit__(BaseModelClass):
     except NameError:
         pass
 
-            
+
 @pytest.mark.asyncio
 async def test___await___(BaseModelClass):
     # Test __aenter__ method
@@ -58,12 +61,11 @@ async def test___await___(BaseModelClass):
 @pytest.mark.asyncio
 async def test_run_async(BaseModelClass):
     async with BaseModelClass() as model:
+
         def my_task():
             return 42
+
         task = model.run_async(my_task)
         assert task is Future
         task = await task
         assert task == 42
-
-
-       
