@@ -43,6 +43,33 @@ test = [
     "pytest-cov"
 ]
 
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-autodoc-typehints",
+    "sphinxcontrib-asyncio",
+    "sphinxcontrib-napoleon",
+    "sphinxcontrib-trio",
+    "sphinx-autodoc-typehints",
+    "sphinx-autodoc-annotation",
+    "sphinx-autodoc-typehints",
+    "sphinx-autodoc-annotation",
+    "sphinx-autodoc-typehints",
+    "sphinx-autodoc-annotation",
+    "sphinx-autodoc-typehints",
+    "sphinx-autodoc-annotation",
+    "sphinx-autodoc-typehints",
+    "sphinx-autodoc-annotation",
+    "sphinx-autodoc-typehints",
+    "sphinx-autodoc-annotation",
+    "sphinx-autodoc-typehints",
+    "sphinx-autodoc-annotation",
+    "sphinx-autodoc-typehints",
+    "sphinx-autodoc-annotation",
+    "sphinx-autodoc-typehints",
+    "sphinx-autodoc-annotation",
+]
+
 [tool.coverage.paths]
 source = ["chromex"]
 
@@ -50,8 +77,7 @@ source = ["chromex"]
 [tool.coverage.run]
 branch = ["true"]
 source =[
-    "chromex",
-    "tests",
+    "chromex"
 ]
 parallel = ["false"]
 
