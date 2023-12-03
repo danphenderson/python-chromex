@@ -2,15 +2,6 @@
 
 An asynchronous interface for chrome automation and scrapping that is built on ``bs4`` and ``selenium``.
 
-
-    pip install chromex
-
-# Contributing
-
-
-Contributions are welcome, and they are greatly appreciated! Every
-little bit helps, and credit will always be given.
-
 # Development
 
 To set up `python-chromex` for local development:
