@@ -37,7 +37,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = [
+tests = [
     "coverage[toml]",
     "pytest",
     "pytest-asyncio",
@@ -46,7 +46,7 @@ test = [
 
 docs = [
     "sphinx",
-    "sphinx-rtd-theme",
+    "sphinx-py3doc-enhanced-theme",
     "sphinx-autodoc-typehints",
     "sphinxcontrib-asyncio",
     "sphinxcontrib-napoleon",
@@ -98,6 +98,9 @@ norecursedirs = [
 ]
 testpaths = [
     "chromex/tests"
+]
+markers = [
+    "asyncio: mark test as an asyncio coroutine",
 ]
 
 [tool.black]

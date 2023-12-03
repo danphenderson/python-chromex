@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 ipython = "*"
-chromex = {editable = true, extras = ["all"], path = "."}
+chromex = {editable = true, extras = ["tests", "docs"], path = "."}
 
 [dev-packages]
 
